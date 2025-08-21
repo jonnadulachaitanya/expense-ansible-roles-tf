@@ -1,0 +1,55 @@
+- name: disable dafault nodejs
+  ansible.builtin.command: dnf module disable nodejs -y
+
+- name: enable nodejs 20
+  ansible.builtin.command: dnf module enable nodejs:20 -y
+
+- name: install nodejs
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+
+  loop:
+  - nodejs
+  - mysql
+
+- name: create expense user
+  ansible.builtin.user: 
+    name: expense
+
+- name: import tasks from common roles
+  ansible.builtin.import_role:  # we have writtened common roles for this remove,create folder and extract code to path.
+    name: common
+    tasks_from: app-pre-req
+
+- name: install the dependencies
+  ansible.builtin.command: npm install # i need to run this command  where package.json is there.
+  args:
+    chdir: /app  #this will change the directory before running the command.
+
+- name: copy backend.service file to remote.
+  ansible.builtin.template: #copy only work without variables but this file contains variable so we used template
+    src: backend.service.j2
+    dest: /etc/systemd/system/backend.service
+
+- name: ansible to install pymysql
+  ansible.builtin.pip:
+    name:
+    - PyMySQL
+    - cryptography
+    executable: pip3.9
+
+- name: importing mysql data
+  community.mysql.mysql_db: # Here we need PySql package is required so we installed PyMySQL package and mysql client to connect mysql database.
+    login_user: root
+    login_host: "{{ login_host }}"
+    login_password: "{{ login_root_password }}"
+    target: /app/schema/backend.sql
+    name: all
+    state: import
+
+- name: daemon reload
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+    state: restarted
+    name: backend

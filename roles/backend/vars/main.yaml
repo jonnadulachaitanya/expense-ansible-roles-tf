@@ -1,0 +1,4 @@
+login_host: mysql.chaitanyaproject.online
+login_root_password: ExpenseApp@1
+app_location: /app
+component: backend
