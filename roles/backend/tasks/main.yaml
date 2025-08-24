@@ -14,7 +14,7 @@
   - mysql
 
 - name: create expense user
-  ansible.builtin.user: 
+  ansible.builtin.user:
     name: expense
 
 - name: import tasks from common roles
@@ -43,7 +43,7 @@
   community.mysql.mysql_db: # Here we need PySql package is required so we installed PyMySQL package and mysql client to connect mysql database.
     login_user: root
     login_host: "{{ login_host }}"
-    login_password: "{{ login_root_password }}"
+    login_password: "{{ mysql_root_password }}"
     target: /app/schema/backend.sql
     name: all
     state: import
