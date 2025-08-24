@@ -8,6 +8,3 @@
   - "variables-{{ environment }}.yaml"
   roles:
   - "{{ component }}"
-
-
-
