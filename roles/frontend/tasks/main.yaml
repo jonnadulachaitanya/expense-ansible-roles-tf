@@ -7,7 +7,7 @@
   ansible.builtin.service:
     name: nginx
     state: started
-    enabled: true
+    enabled: yes
 
 - name: importing tasks from common roles
   ansible.builtin.import_role: # we have writtened common roles for this remove,create folder and extract code to path.
